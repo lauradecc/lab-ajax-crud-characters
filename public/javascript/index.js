@@ -14,7 +14,7 @@ window.addEventListener('load', () => {
                      <div class="name">Id: ${character.id}</div>
                      <div class="name">Name: ${character.name}</div>
                      <div class="occupation"> Occupation: ${character.occupation}</div>
-                     <div class="cartoon">Cartoon: ${character.cartoon}</div>
+                     <div class="cartoon">Is a Cartoon?: ${character.cartoon}</div>
                      <div class="weapon">Weapon: ${character.weapon}</div>
                    </div>`
         })
@@ -31,8 +31,16 @@ window.addEventListener('load', () => {
 
     charactersAPI
       .getOneRegister(characterId)
-      .then(character => {
-        console.log(character.data)
+      .then(characterInfo => {
+        const character = characterInfo.data
+        text = `<div class="character-info">
+                  <div class="name">Id: ${character.id}</div>
+                  <div class="name">Name: ${character.name}</div>
+                  <div class="occupation"> Occupation: ${character.occupation}</div>
+                  <div class="cartoon">Is a Cartoon?: ${character.cartoon}</div>
+                  <div class="weapon">Weapon: ${character.weapon}</div>
+                </div>`
+        document.querySelector('.characters-container').innerHTML = text
         document.querySelector('.operation input').value = ''
       })
       .catch(err => console.log('ERROR', err))
@@ -48,9 +56,15 @@ window.addEventListener('load', () => {
       .deleteOneRegister(characterId)
       .then(character => {
         console.log(character.data)
+        document.getElementById('delete-one').style.backgroundColor = !character.data ? "red" : "green"
+        // if (!character.data) document.getElementById('delete-one').style.backgroundColor = 'red'
+        // else document.getElementById('delete-one').style.backgroundColor = 'green'       
         document.querySelector('.delete input').value = ''
       })
-      .catch(err => console.log('ERROR', err))
+      .catch(err => {
+        console.log('ERROR', err)
+        document.getElementById('delete-one').style.backgroundColor = 'red'
+      })
   });
 
 
@@ -77,8 +91,12 @@ window.addEventListener('load', () => {
           input.value = ''
           input.checked = false
         })
+        document.getElementById('send-data').style.backgroundColor = 'green'
       })
-      .catch(err => console.log('ERROR', err))
+      .catch(err => {
+        console.log('ERROR', err)
+        document.getElementById('send-data').style.backgroundColor = 'red'
+      })
   };
 
 
@@ -92,15 +110,21 @@ window.addEventListener('load', () => {
     const character = {
       name: inputs[0].value,
       occupation: inputs[1].value,
-      weapon: inputs[2].value
+      weapon: inputs[2].value,
+      cartoon: inputs[3].checked
     }
 
     charactersAPI
       .createOneRegister(character)
       .then(newCharacter => {
         console.log(newCharacter.data)
+        document.getElementById('create-data').style.backgroundColor = 'green'    
         document.querySelectorAll('#new-character-form input').forEach(input => input.value = '')
       })
-      .catch(err => console.log('ERROR', err))
+      .catch(err => {
+        console.log('ERROR', err)
+        document.getElementById('create-data').style.backgroundColor = 'red'    
+      })
+
   };
 });
